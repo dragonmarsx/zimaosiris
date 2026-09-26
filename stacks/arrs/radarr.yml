@@ -1,0 +1,40 @@
+name: arr-radarr  # Stack & directory name
+networks:
+  arrstack_network:
+    external: true
+services:
+  radarr:
+    container_name: radarr
+    image: linuxserver/radarr:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APPDATA_PATH}/radarr:/config
+      - ${MEDIA_PATH}:/data
+    ports:
+      - 7878:7878
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    deploy:
+      resources:
+        reservations:
+          memory: 256MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+x-casaos:
+  main: radarr
+  port_map: "7878"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.radarr/assets/icon.svg
+  title:
+    en_US: Radarr
+    custom: Radarr
+  #version: 6.3.0 #(2026.09)

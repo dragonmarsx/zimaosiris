@@ -1,0 +1,40 @@
+name: arr-lidarr  # Stack & directory name
+networks:
+  arrstack_network:
+    external: true
+services:
+  lidarr:
+    container_name: lidarr
+    image: linuxserver/lidarr:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APPDATA_PATH}/lidarr:/config
+      - ${MEDIA_PATH}:/data
+    ports:
+      - 8686:8686
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    deploy:
+      resources:
+        reservations:
+          memory: 64MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+x-casaos:
+  main: lidarr
+  port_map: "8686"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.lidarr/assets/icon.svg
+  title:
+    en_US: Lidarr
+    custom: Lidarr
+  #version: 3.1.0 #(2026.09)

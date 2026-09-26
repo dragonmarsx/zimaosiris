@@ -1,0 +1,54 @@
+# REQUIREMENT:  The external network needs to be creteed first.
+# Is arrstack_network listed with this command? docker network ls
+# If not, then run this: docker network create arrstack_network
+name: jellyfin  # Stack & directory name ls -l /var/lib/casaos/apps/
+networks:
+  arrstack_network:
+    external: true
+services:
+  jellyfin:
+    container_name: jellyfin
+    image: linuxserver/jellyfin:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/vc/lib:/opt/vc/lib
+      - ${APPDATA_PATH}/jellyfin:/config
+      - ${MEDIA_PATH}/media:/data/media:ro #arr-stack read-only
+      - ${STREAM_PATH}:/Media                 #home videos
+      - ${STREAM_PATH}:/Media                 #home videos
+      - ${IMMICH_PATH}:/Media                #immich videos
+    ports:
+      - 8096:8096
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    devices:
+      - /dev/dri:/dev/dri
+      - /dev/vcsm:/dev/vcsm
+      - /dev/vchiq:/dev/vchiq
+      - /dev/video10:/dev/video10
+      - /dev/video11:/dev/video11
+      - /dev/video12:/dev/video12
+    deploy:
+      resources:
+        reservations:
+          memory: 256MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+x-casaos:
+  main: jellyfin
+  port_map: "8096"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.jellyfin/assets/icon.svg
+  title:
+    en_US: Jellyfin
+    custom: Jellyfin
+  #version: 10.11.10 #(2026.09)

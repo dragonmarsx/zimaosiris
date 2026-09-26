@@ -1,0 +1,44 @@
+name: arr-flaresolverr  # Stack & directory name
+networks:
+  arrstack_network:
+    external: true
+services:
+  flaresolverr:
+    container_name: flaresolverr
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    volumes: []
+    ports:
+      - 8191:8191
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      UMASK: "002"
+      LOG_LEVEL: info
+      LOG_HTML: "false"
+      CAPTCHA_SOLVER: none
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    deploy:
+      resources:
+        reservations:
+          memory: 64MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+    cpu_shares: 50
+    command: []
+    privileged: false
+x-casaos:
+  main: flaresolverr
+  port_map: "8191"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.flaresolverr/assets/icon.svg
+  title:
+    en_US: FlareSolverr
+    custom: FlareSolverr
+   #version: 3.4.6 #(2026.09)

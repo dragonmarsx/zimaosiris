@@ -1,0 +1,46 @@
+name: arr-qbittorrent  # Stack & directory name ls -l /var/lib/casaos/apps/
+networks:
+  arrstack_network:
+    external: true
+services:
+  qbittorrent:
+    container_name: qbittorrent
+    image: ghcr.io/hotio/qbittorrent:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APPDATA_PATH}/qbittorrent:/config
+      - ${MEDIA_PATH}:/data
+    ports:
+      - 8080:8080  # Required to coexist peacefully with sabnzbd. 
+      - 6881:6881
+      - 6881:6881/udp      
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      UMASK: "002"
+      WEBUI_PORT: "8080"
+      TORRENTING_PORT: "6881"
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1    
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          memory: 256MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+x-casaos:
+  main: qbittorrent
+  port_map: "8080"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.qbittorrent/assets/icon.svg
+  title:
+    en_US: qBittorrent
+    custom: qBittorrent
+  #version: 5.0.4 #(2026.09)
+  

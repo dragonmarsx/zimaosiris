@@ -1,0 +1,46 @@
+name: arr-seerr  # Stack & directory name
+networks:
+  arrstack_network:
+    external: true
+services:
+  app:
+    container_name: big-bear-seerr
+    image: seerr/seerr:latest
+    volumes:
+      - ${APPDATA_PATH}/seerr/config:/app/config
+    ports:
+      - 5056:5055
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      LOG_LEVEL: debug  
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    deploy:
+      resources:
+        reservations:
+          memory: 256MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+    init: true
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider
+        http://localhost:5055/api/v1/settings/public || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+x-casaos:
+  main: app
+  port_map: "5056"
+  icon: https://cdn.jsdelivr.net/gh/selfhst/icons/png/seerr.png
+  title:
+    en_US: Seerr
+    custom: Seerr

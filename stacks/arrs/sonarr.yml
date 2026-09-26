@@ -1,0 +1,40 @@
+name: arr-sonarr  # Stack & directory name
+networks:
+  arrstack_network:
+    external: true
+services:
+  sonarr:
+    container_name: sonarr  
+    image: linuxserver/sonarr:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APPDATA_PATH}/sonarr:/config
+      - ${MEDIA_PATH}:/data
+    ports:
+      - 8989:8989
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    deploy:
+      resources:
+        reservations:
+          memory: 256MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+x-casaos:
+  main: sonarr
+  port_map: "8989"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.sonarr/assets/icon.svg
+  title:
+    en_US: Sonarr
+    custom: Sonarr
+  #version: 4.0.19 #(2026.09)

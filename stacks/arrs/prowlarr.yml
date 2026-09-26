@@ -1,0 +1,39 @@
+name: arr-prowlarr  # Stack & directory name
+networks:
+  arrstack_network:
+    external: true
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: linuxserver/prowlarr:latest
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ${APPDATA_PATH}/prowlarr:/config
+    ports:
+      - 9696:9696
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    restart: unless-stopped
+    networks:
+      - arrstack_network
+    dns:
+      - 1.1.1.1
+      - 1.0.0.1
+    deploy:
+      resources:
+        reservations:
+          memory: 64MB
+          cpus: "0.00"
+        limits:
+          memory: 4GB
+          cpus: "1.00"
+x-casaos:
+  main: prowlarr
+  port_map: "9696"
+  icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@gh-pages/apps/org.icewhale.prowlarr/assets/icon.svg
+  title:
+    en_US: Prowlarr
+    custom: Prowlarr
+  #version: 2.5.2 #(2026.09)
